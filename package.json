@@ -1,0 +1,19 @@
+{
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/domjtalbot/workflows/issues"
+  },
+  "description": "",
+  "homepage": "https://github.com/domjtalbot/workflows#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "workflows",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domjtalbot/workflows.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 0"
+  },
+  "version": "1.0.0"
+}
