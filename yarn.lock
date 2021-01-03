@@ -3707,6 +3707,16 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"next-with-portals@workspace:examples/next-with-portals":
+  version: 0.0.0-use.local
+  resolution: "next-with-portals@workspace:examples/next-with-portals"
+  dependencies:
+    next: latest
+    react: ^16.7.0
+    react-dom: ^16.7.0
+  languageName: unknown
+  linkType: soft
+
 "next-with-styled-components@workspace:examples/next-with-styled-components":
   version: 0.0.0-use.local
   resolution: "next-with-styled-components@workspace:examples/next-with-styled-components"
@@ -4523,7 +4533,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react-dom@npm:^16.12.0, react-dom@npm:^16.13.1, react-dom@npm:^16.8.0":
+"react-dom@npm:^16.12.0, react-dom@npm:^16.13.1, react-dom@npm:^16.7.0, react-dom@npm:^16.8.0":
   version: 16.14.0
   resolution: "react-dom@npm:16.14.0"
   dependencies:
@@ -4551,7 +4561,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"react@npm:^16.12.0, react@npm:^16.13.1, react@npm:^16.8.0":
+"react@npm:^16.12.0, react@npm:^16.13.1, react@npm:^16.7.0, react@npm:^16.8.0":
   version: 16.14.0
   resolution: "react@npm:16.14.0"
   dependencies:
