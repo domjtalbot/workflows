@@ -4,6 +4,10 @@
     "url": "https://github.com/domjtalbot/workflows/issues"
   },
   "description": "",
+  "devDependencies": {
+    "@types/rimraf": "^3",
+    "rimraf": "^3.0.2"
+  },
   "homepage": "https://github.com/domjtalbot/workflows#readme",
   "license": "ISC",
   "main": "index.js",
@@ -22,9 +26,5 @@
   "version": "1.0.0",
   "workspaces": [
     "examples/*"
-  ],
-  "devDependencies": {
-    "@types/rimraf": "^3",
-    "rimraf": "^3.0.2"
-  }
+  ]
 }
