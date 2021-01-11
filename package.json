@@ -14,11 +14,17 @@
   },
   "scripts": {
     "build": "yarn workspaces foreach -ptv run build",
+    "clean:build": "yarn rimraf ./**/.next",
+    "clean:node_modules": "yarn rimraf ./**/node_modules",
     "test": "yarn workspaces foreach -ptv run test",
     "type-check": "yarn workspaces foreach -ptv run type-check"
   },
   "version": "1.0.0",
   "workspaces": [
     "examples/*"
-  ]
+  ],
+  "devDependencies": {
+    "@types/rimraf": "^3",
+    "rimraf": "^3.0.2"
+  }
 }
