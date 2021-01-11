@@ -13,7 +13,9 @@
     "url": "git+https://github.com/domjtalbot/workflows.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0"
+    "build": "yarn workspaces foreach -vitA run build",
+    "test": "yarn workspaces foreach -vitA --include examples run test",
+    "type-check": "yarn workspaces:foreach type-check"
   },
   "version": "1.0.0",
   "workspaces": [
