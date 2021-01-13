@@ -39,7 +39,7 @@ jobs:
             # needs to be run, which in turn is only run if no
             # cache exists for specifc `yarn.lock`.
             - if: steps.yarn-cache.outputs.cache-hit != 'true'
-              name: Setup Node.js v${{ matrix.node-version }}
+              name: Setup Node.js
               uses: actions/setup-node@v2
 
             # Only install yarn dependencies if cache for the
@@ -73,7 +73,7 @@ jobs:
                       ${{ runner.os }}-yarn-
 
             # Install Node as it is required by the job.
-            - name: Setup Node.js v${{ matrix.node-version }}
+            - name: Setup Node.js
               uses: actions/setup-node@v2
 
             # Only install yarn dependencies if cache for the
@@ -110,7 +110,7 @@ jobs:
                       ${{ runner.os }}-yarn-
 
             # Install Node as it is required by the job.
-            - name: Setup Node.js v${{ matrix.node-version }}
+            - name: Setup Node.js
               uses: actions/setup-node@v2
 
             # Only install yarn dependencies if cache for the
@@ -157,7 +157,7 @@ jobs:
                       ./**/.next
 
             # Install Node as it is required by the job.
-            - name: Setup Node.js v${{ matrix.node-version }}
+            - name: Setup Node.js
               uses: actions/setup-node@v2
 
             # Only install yarn dependencies if cache for the
