@@ -20,6 +20,9 @@
     "build": "yarn workspaces foreach -ptv run build",
     "clean:build": "yarn rimraf ./**/.next",
     "clean:node_modules": "yarn rimraf ./**/node_modules",
+    "test:workflow:dry": "npm run test:workflow -- --dryrun",
+    "test:workflow:ubuntu": "npm run test:workflow -- --platform ubuntu-latest=nektos/act-environments-ubuntu:18.04",
+    "test:workflow": "act pull_request",
     "test": "yarn workspaces foreach -ptv run test",
     "type-check": "yarn workspaces foreach -ptv run type-check"
   },
