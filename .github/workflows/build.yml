@@ -18,7 +18,7 @@ jobs:
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
 
         steps:
             # Checkout codebase triggered by commit
@@ -57,7 +57,7 @@ jobs:
         # Wait for jobs to complete before running this job.
         needs: [setup]
         
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
 
         steps:
             # Checkout codebase triggered by commit
@@ -94,7 +94,7 @@ jobs:
         # Wait for jobs to complete before running this job.
         needs: [setup]
         
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
 
         steps:
             # Checkout codebase triggered by commit
@@ -131,7 +131,7 @@ jobs:
         # Wait for jobs to complete before running this job.
         needs: [test, typescript]
         
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
 
         steps:
             # Checkout codebase triggered by commit
