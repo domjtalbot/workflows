@@ -18,6 +18,8 @@ jobs:
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
+        if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
+        
         runs-on: ubuntu-latest
 
         steps:
@@ -54,6 +56,8 @@ jobs:
               run: yarn
 
     test:
+        if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
+
         # Wait for jobs to complete before running this job.
         needs: [setup]
         
@@ -91,6 +95,8 @@ jobs:
               run: yarn test
 
     typescript:
+        if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
+
         # Wait for jobs to complete before running this job.
         needs: [setup]
         
@@ -128,6 +134,8 @@ jobs:
               run: yarn type-check
 
     build:
+        if: ${{ !contains(github.event.head_commit.message, '[skip-ci]') }}
+        
         # Wait for jobs to complete before running this job.
         needs: [test, typescript]
         
