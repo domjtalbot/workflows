@@ -9,7 +9,7 @@
     "rimraf": "^3.0.2"
   },
   "homepage": "https://github.com/domjtalbot/workflows#readme",
-  "license": "ISC",
+  "license": "MIT",
   "name": "workflows",
   "repository": {
     "type": "git",
