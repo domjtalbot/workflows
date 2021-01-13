@@ -1,0 +1,30 @@
+{
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/domjtalbot/workflows/issues"
+  },
+  "description": "",
+  "devDependencies": {
+    "@types/rimraf": "^3",
+    "rimraf": "^3.0.2"
+  },
+  "homepage": "https://github.com/domjtalbot/workflows#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "workflows",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/domjtalbot/workflows.git"
+  },
+  "scripts": {
+    "build": "yarn workspaces foreach -ptv run build",
+    "clean:build": "yarn rimraf ./**/.next",
+    "clean:node_modules": "yarn rimraf ./**/node_modules",
+    "test": "yarn workspaces foreach -ptv run test",
+    "type-check": "yarn workspaces foreach -ptv run type-check"
+  },
+  "version": "1.0.0",
+  "workspaces": [
+    "examples/*"
+  ]
+}
