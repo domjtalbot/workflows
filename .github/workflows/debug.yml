@@ -1,0 +1,20 @@
+# Note when using act:
+# Some services &/ steps require adjusting to test locally using `act`.
+# To check for `act` use this in an if: `github.actor != 'nektos/act'`
+
+name: Debug
+
+on: [push]
+
+jobs:
+    debug-context:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Github Context
+          run: |
+            echo "${{ toJson(github) }}"
+
+        - name: Runner Context
+          run: |
+            echo "${{ toJson(runner) }}"
