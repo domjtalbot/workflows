@@ -4,7 +4,12 @@
 
 name: Build
 
-on: [pull_request]
+on: 
+  pull_request:
+    paths-ignore:
+    - '**/*.md'
+    - '**/LICENSE'
+    - '**/.gitignore'
 
 jobs:
     # Setup the dependencies used by all jobs.
