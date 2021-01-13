@@ -10,7 +10,6 @@
   },
   "homepage": "https://github.com/domjtalbot/workflows#readme",
   "license": "ISC",
-  "main": "index.js",
   "name": "workflows",
   "repository": {
     "type": "git",
