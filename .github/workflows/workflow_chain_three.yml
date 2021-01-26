@@ -18,3 +18,17 @@ jobs:
         - name: Echo
           run: |
             echo "This is the final part of the chain" && exit 0
+
+    dispatch_required_status:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: octokit/request-action@v2
+          id: Required Status Workflow Dispatch
+          with:
+            route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+            owner: ${{ fromJson(github.repository_owner) }}
+            repo: ${{ fromJson(github.repository.name) }}
+            workflow_id: "required_status"
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

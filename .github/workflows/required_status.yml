@@ -2,19 +2,19 @@
 # Some services &/ steps require adjusting to test locally using `act`.
 # To check for `act` use this in an if: `github.actor != 'nektos/act'`
 
-name: Workflow chain two
+name: Required Status
 
-on:
-  workflow_run:
-    types: 
-      - completed
-    workflows: ["Workflow chain one"]
+on: [push]
 
 jobs:
-    test:
+    debug-context:
       runs-on: ubuntu-latest
 
       steps:
-        - name: Echo
+        - name: Github Context
           run: |
-            echo "This is part two of the workflow chain" && exit 0
+            echo "${{ toJson(github) }}"
+
+        - name: Runner Context
+          run: |
+            echo "${{ toJson(runner) }}"
