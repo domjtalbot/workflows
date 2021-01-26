@@ -27,8 +27,8 @@ jobs:
           name: Required Status Workflow Dispatch
           with:
             route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
-            owner: ${{ fromJson(github.repository_owner) }}
-            repo: ${{ fromJson(github.repository.name) }}
+            owner: ${{ github.repository_owner }}
+            repo: ${{ github.repository.name }}
             workflow_id: "workflow_dispatch"
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
