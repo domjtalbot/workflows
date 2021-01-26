@@ -1,0 +1,16 @@
+# Note when using act:
+# Some services &/ steps require adjusting to test locally using `act`.
+# To check for `act` use this in an if: `github.actor != 'nektos/act'`
+
+name: Workflow chain one
+
+on: [push]
+
+jobs:
+    test:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Echo
+          run: |
+            echo This is part one of the workflow chain && exit 0
