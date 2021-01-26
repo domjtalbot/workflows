@@ -23,15 +23,15 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - uses: octokit/request-action@v2.x
-          name: Required Status Workflow Dispatch
-          with:
-            route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
-            owner: ${{ github.repository_owner }}
-            repo: ${{ github.event.repository.name }}
-            workflow_id: "workflow_dispatch"
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # - uses: octokit/request-action@v2.x
+        #   name: Required Status Workflow Dispatch
+        #   with:
+        #     route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
+        #     owner: ${{ github.repository_owner }}
+        #     repo: ${{ github.event.repository.name }}
+        #     workflow_id: "workflow_dispatch"
+        #   env:
+        #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
         # Create check run
         - uses: octokit/request-action@v2.x
