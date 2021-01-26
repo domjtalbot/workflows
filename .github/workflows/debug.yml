@@ -18,7 +18,6 @@ on:
     push,
     status,
     watch,
-    workflow_run,
   ]
 
 jobs:
