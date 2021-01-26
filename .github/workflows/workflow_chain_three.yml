@@ -28,7 +28,7 @@ jobs:
           with:
             route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
             owner: ${{ github.repository_owner }}
-            repo: ${{ github.repository.name }}
+            repo: ${{ github.event.repository.name }}
             workflow_id: "workflow_dispatch"
           env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
