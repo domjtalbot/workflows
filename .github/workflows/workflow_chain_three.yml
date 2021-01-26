@@ -24,7 +24,7 @@ jobs:
 
       steps:
         - uses: octokit/request-action@v2
-          id: Required Status Workflow Dispatch
+          name: Required Status Workflow Dispatch
           with:
             route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
             owner: ${{ fromJson(github.repository_owner) }}
