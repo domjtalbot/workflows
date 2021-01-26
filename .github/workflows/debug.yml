@@ -4,17 +4,33 @@
 
 name: Debug
 
-on: [push]
+on:
+  [
+    check_run,
+    check_suite,
+    create,
+    delete,
+    deployment_status,
+    deployment,
+    pull_request_review,
+    pull_request_target,
+    pull_request,
+    push,
+    status,
+    watch,
+    workflow_dispatch,
+    workflow_run,
+  ]
 
 jobs:
-    debug-context:
-      runs-on: ubuntu-latest
+  debug-context:
+    runs-on: ubuntu-latest
 
-      steps:
-        - name: Github Context
-          run: |
-            echo "${{ toJson(github) }}"
+    steps:
+      - name: Github Context
+        run: |
+          echo "${{ toJson(github) }}"
 
-        - name: Runner Context
-          run: |
-            echo "${{ toJson(runner) }}"
+      - name: Runner Context
+        run: |
+          echo "${{ toJson(runner) }}"
