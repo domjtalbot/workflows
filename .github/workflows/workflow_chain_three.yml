@@ -8,7 +8,7 @@ on:
   workflow_run:
     types: 
       - completed
-    workflows: ["Workflow chain one", "Workflow chain two"]
+    workflows: ["Workflow chain two"]
 
 jobs:
     test:
