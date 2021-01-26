@@ -23,7 +23,7 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - uses: octokit/request-action@v2
+        - uses: octokit/request-action@v2.x
           name: Required Status Workflow Dispatch
           with:
             route: POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches
