@@ -1,0 +1,20 @@
+# Note when using act:
+# Some services &/ steps require adjusting to test locally using `act`.
+# To check for `act` use this in an if: `github.actor != 'nektos/act'`
+
+name: Workflow chain three
+
+on:
+  workflow_run:
+    types: 
+      - completed
+    workflows: ["Workflow chain one", "Workflow chain two"]
+
+jobs:
+    test:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Echo
+          run: |
+            echo "This is the final part of the chain" && exit 0
