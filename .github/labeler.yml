@@ -4,6 +4,6 @@ labels:
   - label: "CI: GitHub Actions"
     matcher:
       files:
-        any: [ "./.github/workflows/**" ]
+        any: [ ".github/workflows/**/*.yml" ]
     # Remove label if match failed
     sync: true
