@@ -1,0 +1,47 @@
+- name: Bug
+  color: d73a4a
+  description: Something isn't working
+
+- name: Chore
+  color: bfdadc
+  description: Generic task
+
+- name: CI
+  color: fbca04
+  description: Continuous Integration
+
+- name: "CI: GitHub Actions"
+  color: fbca04
+  description: Improvement or additions to GitHub Actions
+
+- name: "CI: CircleCI"
+  color: fbca04
+  description: Improvement or additions to CircleCI
+
+- name: Dependencies
+  color: 5319e7
+  description: Updates a dependency
+
+- name: Dependabot
+  color: 5319e7
+  description: Dependabot
+
+- name: Deploy
+  color: d93f0b
+  description: Deploy
+
+- name: Deploy Staging
+  color: d93f0b
+  description: Deploy Staging
+
+- name: Deploy Production
+  color: d93f0b
+  description: Deploy Production
+
+- name: Documentation
+  color: 0075ca
+  description: Improvements or additions to documentation
+
+- name: Feature
+  color: 0e8a16
+  description: New feature
