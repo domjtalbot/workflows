@@ -1,0 +1,3 @@
+# Add 'CI: Github Actions' label to any root file changes
+"CI: Github Actions":
+  - ./.github/workflows/**/*
