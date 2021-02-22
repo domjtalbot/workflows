@@ -1,3 +1,9 @@
-# Add 'CI: Github Actions' label to any root file changes
-"CI: Github Actions":
-  - ./.github/workflows/**/*
+version: v1
+
+labels:
+  - label: "CI: GitHub Actions"
+    matcher:
+      files:
+        any: [ "./.github/workflows/**" ]
+    # Remove label if match failed
+    sync: true
