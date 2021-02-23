@@ -7,7 +7,7 @@ name: Required Status check rename
 on: [pull_request]
 
 jobs:
-    test:
+    test-rename:
       runs-on: ubuntu-latest
 
       steps:
