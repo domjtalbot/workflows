@@ -11,6 +11,6 @@ jobs:
       runs-on: ubuntu-latest
 
       steps:
-        - name: Test
+        - name: Test rename
           run: |
             echo Testing 123...
