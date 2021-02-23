@@ -1,0 +1,16 @@
+# Note when using act:
+# Some services &/ steps require adjusting to test locally using `act`.
+# To check for `act` use this in an if: `github.actor != 'nektos/act'`
+
+name: Required Status check rename
+
+on: [pull_request]
+
+jobs:
+    test:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: Test
+          run: |
+            echo Testing 123...
