@@ -20,4 +20,4 @@ jobs:
       if: ${{ success() }}
       steps:
         - name: Workflow was successful
-          run: echo "Done."
+          run: echo "Done. "
