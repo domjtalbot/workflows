@@ -56,7 +56,7 @@ jobs:
     setup:
         needs: [pre_build, pre_test, pre_typescript]
 
-        if: ${{ needs.pre_build.outputs.should_skip == 'true' && needs.pre_test.outputs.should_skip == 'true' && needs.pre_typescript.outputs.should_skip == 'true' }}
+        if: ${{ needs.pre_build.outputs.should_skip != 'true' || needs.pre_test.outputs.should_skip != 'true' || needs.pre_typescript.outputs.should_skip != 'true' }}
 
         runs-on: ubuntu-latest
 
