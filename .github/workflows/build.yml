@@ -12,6 +12,18 @@ on:
     - '**/.gitignore'
 
 jobs:
+    pre_build:
+      runs-on: ubuntu-latest
+      outputs:
+        should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      steps:
+        - id: skip_check
+          uses: fkirc/skip-duplicate-actions@master
+          with:
+            cancel_others: 'true'
+            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/"]'
+            skip_after_successful_duplicate: 'true'
+
     pre_test:
       runs-on: ubuntu-latest
       outputs:
@@ -23,6 +35,18 @@ jobs:
             cancel_others: 'true'
             paths: '["**/package.json"]'
             skip_after_successful_duplicate: 'true'
+    
+    pre_typescript:
+      runs-on: ubuntu-latest
+      outputs:
+        should_skip: ${{ steps.skip_check.outputs.should_skip }}
+      steps:
+        - id: skip_check
+          uses: fkirc/skip-duplicate-actions@master
+          with:
+            cancel_others: 'true'
+            paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
+            skip_after_successful_duplicate: 'true'
 
     # Setup the dependencies used by all jobs.
     # This job is reponsible for installing and caching yarn
@@ -30,6 +54,10 @@ jobs:
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
+        needs: [pre_build, pre_test, pre_typescript]
+
+        if: ${{ needs.pre_build.outputs.should_skip != 'true' && needs.pre_test.outputs.should_skip != 'true' && needs.pre_typescript.outputs.should_skip != 'true' }}
+
         runs-on: ubuntu-latest
 
         steps:
@@ -106,8 +134,10 @@ jobs:
 
     typescript:
         # Wait for jobs to complete before running this job.
-        needs: [setup]
+        needs: [pre_typescript, setup]
         
+        if: ${{ needs.pre_typescript.outputs.should_skip != 'true' }}
+
         runs-on: ubuntu-latest
 
         steps:
@@ -143,8 +173,10 @@ jobs:
 
     build:
         # Wait for jobs to complete before running this job.
-        needs: [test, typescript]
+        needs: [pre_build, setup]
         
+        if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
+
         runs-on: ubuntu-latest
 
         steps:
