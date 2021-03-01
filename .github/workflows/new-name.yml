@@ -13,10 +13,12 @@ jobs:
         - name: Test rename
           run: |
             echo Testing 123...
-
-    passed:
-      runs-on: ubuntu-latest
-      if: ${{ success() }}
-      steps:
-        - name: Workflow was successful
-          run: echo "Done. "
+        
+        - uses: LouisBrunner/checks-action@v1.1.1
+          if: always()
+          with:
+            token: ${{ secrets.GITHUB_TOKEN }}
+            name: Test XYZ
+            conclusion: ${{ job.status }}
+            output: |
+              {"summary":${{ job.status }}}

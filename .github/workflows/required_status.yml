@@ -18,15 +18,3 @@ jobs:
         - name: Runner Context
           run: |
             echo "${{ toJson(runner) }}"
-
-        - uses: actions/create-outputs@v0.0.0-fake
-          id: test
-        
-        - uses: LouisBrunner/checks-action@v1.1.1
-          if: always()
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            name: Test XYZ
-            conclusion: ${{ job.status }}
-            output: |
-              {"summary":${{ steps.test.outputs.summary }}}
