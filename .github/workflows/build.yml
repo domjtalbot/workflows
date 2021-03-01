@@ -12,7 +12,7 @@ on:
     - '**/.gitignore'
 
 jobs:
-    pre_build:
+    pre-build-check:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -24,7 +24,7 @@ jobs:
             paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/"]'
             skip_after_successful_duplicate: 'true'
 
-    pre_test:
+    pre-test-check:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -36,7 +36,7 @@ jobs:
             paths: '["**/package.json"]'
             skip_after_successful_duplicate: 'true'
     
-    pre_typescript:
+    pre-typescript-check:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -54,9 +54,9 @@ jobs:
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
-        needs: [pre_build, pre_test, pre_typescript]
+        needs: [pre-build-check, pre-test-check, pre-typescript-check]
 
-        if: ${{ needs.pre_build.outputs.should_skip != 'true' || needs.pre_test.outputs.should_skip != 'true' || needs.pre_typescript.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-build-check.outputs.should_skip != 'true' || needs.pre-test-check.outputs.should_skip != 'true' || needs.pre-typescript-check.outputs.should_skip != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -95,9 +95,9 @@ jobs:
 
     test:
         # Wait for jobs to complete before running this job.
-        needs: [pre_test, setup]
+        needs: [pre-test-check, setup]
 
-        if: ${{ needs.pre_test.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-test-check.outputs.should_skip != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -134,9 +134,9 @@ jobs:
 
     typescript:
         # Wait for jobs to complete before running this job.
-        needs: [pre_typescript, setup]
+        needs: [pre-typescript-check, setup]
         
-        if: ${{ needs.pre_typescript.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-typescript-check.outputs.should_skip != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -173,9 +173,9 @@ jobs:
 
     build:
         # Wait for jobs to complete before running this job.
-        needs: [pre_build, setup]
+        needs: [pre-build-check, setup]
         
-        if: ${{ needs.pre_build.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-build-check.outputs.should_skip != 'true' }}
 
         runs-on: ubuntu-latest
 
