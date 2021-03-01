@@ -4,12 +4,7 @@
 
 name: Build
 
-on: 
-  pull_request:
-    paths-ignore:
-    - '**/*.md'
-    - '**/LICENSE'
-    - '**/.gitignore'
+on: [pull_request]
 
 jobs:
     pre-build-check:
@@ -20,10 +15,8 @@ jobs:
         - id: skip_check
           uses: fkirc/skip-duplicate-actions@master
           with:
-            cancel_others: 'true'
             paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
-            skip_after_successful_duplicate: 'true'
-
+            
     pre-test-check:
       runs-on: ubuntu-latest
       outputs:
@@ -32,9 +25,7 @@ jobs:
         - id: skip_check
           uses: fkirc/skip-duplicate-actions@master
           with:
-            cancel_others: 'true'
-            paths: '["**/package.json"]'
-            skip_after_successful_duplicate: 'true'
+            paths: '["**/package.json"]'   
     
     pre-typescript-check:
       runs-on: ubuntu-latest
@@ -44,10 +35,8 @@ jobs:
         - id: skip_check
           uses: fkirc/skip-duplicate-actions@master
           with:
-            cancel_others: 'true'
             paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
-            skip_after_successful_duplicate: 'true'
-
+            
     # Setup the dependencies used by all jobs.
     # This job is reponsible for installing and caching yarn
     # dependencies, which are then used by other jobs.
