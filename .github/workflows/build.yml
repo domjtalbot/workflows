@@ -21,7 +21,7 @@ jobs:
           uses: fkirc/skip-duplicate-actions@master
           with:
             cancel_others: 'true'
-            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/"]'
+            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
             skip_after_successful_duplicate: 'true'
 
     pre-test-check:
