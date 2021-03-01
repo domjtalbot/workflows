@@ -7,37 +7,27 @@ name: Renamed workflow
 on: [pull_request]
 
 jobs:
-    que:
+    pre_job:
+      # continue-on-error: true # Uncomment once integration is finished
       runs-on: ubuntu-latest
+      # Map a step output to a job output
+      outputs:
+        should_skip: ${{ steps.skip_check.outputs.should_skip }}
       steps:
-        - uses: LouisBrunner/checks-action@v1.1.1
+        - id: skip_check
+          uses: fkirc/skip-duplicate-actions@master
           with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            name: Test XYZ
-            status: "in_progress"
+            # All of these options are optional, so you can remove them if you are happy with the defaults
+            cancel_others: 'true'
+            paths_ignore: '["**/LICENSE"]'
+            paths: '["**/README.md"]'
+            skip_after_successful_duplicate: 'true'
 
     test-rename:
       runs-on: ubuntu-latest
-      if: |
-        !contains(github.event.head_commit.message, '[skip job]')
+      needs: [pre_job]
+      if: ${{ needs.pre_job.outputs.should_skip != 'true' }}
       steps:
         - name: Test rename
           run: |
-            echo Testing 123...
-        - name: Github Context
-          run: |
-            echo "${{ toJson(github) }}"
-        
-    summary:
-      runs-on: ubuntu-latest
-      needs: [test-rename]
-      if: always()
-      steps:
-        - uses: LouisBrunner/checks-action@v1.1.1
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            name: Test XYZ
-            status: "completed"
-            conclusion: "success"
-            output: |
-              {"summary": "hello world"}
+            echo Testing 123..
