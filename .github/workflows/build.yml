@@ -7,7 +7,7 @@ name: Build
 on: [pull_request]
 
 jobs:
-    pre-checks:
+    pre-checkss:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -45,9 +45,9 @@ jobs:
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
-        needs: [pre-check]
+        needs: [pre-checks]
 
-        if: ${{ needs.pre-check.outputs.skip_build != 'true' || needs.pre-check.outputs.skip_test != 'true' || needs.pre-check.outputs.skip_typescript }}
+        if: ${{ needs.pre-checks.outputs.skip_build != 'true' || needs.pre-checks.outputs.skip_test != 'true' || needs.pre-checks.outputs.skip_typescript }}
 
         runs-on: ubuntu-latest
 
@@ -86,9 +86,9 @@ jobs:
 
     test:
         # Wait for jobs to complete before running this job.
-        needs: [pre-check, setup]
+        needs: [pre-checks, setup]
 
-        if: ${{ needs.pre-check.outputs.skip_test != 'true' }}
+        if: ${{ needs.pre-checks.outputs.skip_test != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -125,9 +125,9 @@ jobs:
 
     typescript:
         # Wait for jobs to complete before running this job.
-        needs: [pre-check, setup]
+        needs: [pre-checks, setup]
         
-        if: ${{ needs.pre-check.outputs.skip_typescript != 'true' }}
+        if: ${{ needs.pre-checks.outputs.skip_typescript != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -164,9 +164,9 @@ jobs:
 
     build:
         # Wait for jobs to complete before running this job.
-        needs: [pre-check, setup]
+        needs: [pre-checks, setup]
         
-        if: ${{ needs.pre-check.outputs.skip_build != 'true' }}
+        if: ${{ needs.pre-checks.outputs.skip_build != 'true' }}
 
         runs-on: ubuntu-latest
 
