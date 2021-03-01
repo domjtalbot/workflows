@@ -7,7 +7,7 @@ name: Build
 on: [pull_request]
 
 jobs:
-    pre-build-check:
+    pre-checks:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
@@ -16,36 +16,38 @@ jobs:
           uses: fkirc/skip-duplicate-actions@master
           with:
             paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
-            
-    pre-test-check:
+
+    pre-build-check:
       runs-on: ubuntu-latest
       outputs:
-        should_skip: ${{ steps.skip_check.outputs.should_skip }}
+        skip_build: ${{ steps.skip_build.outputs.should_skip }}
+        skip_test: ${{ steps.skip_test.outputs.should_skip }}
+        skip_typescript: ${{ steps.skip_typescript.outputs.should_skip }}
       steps:
-        - id: skip_check
+        - id: skip_build
           uses: fkirc/skip-duplicate-actions@master
           with:
-            paths: '["**/package.json"]'   
-    
-    pre-typescript-check:
-      runs-on: ubuntu-latest
-      outputs:
-        should_skip: ${{ steps.skip_check.outputs.should_skip }}
-      steps:
-        - id: skip_check
+            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
+
+        - id: skip_test
           uses: fkirc/skip-duplicate-actions@master
           with:
             paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
-            
+
+        - id: skip_typescript
+          uses: fkirc/skip-duplicate-actions@master
+          with:
+            paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
+                        
     # Setup the dependencies used by all jobs.
     # This job is reponsible for installing and caching yarn
     # dependencies, which are then used by other jobs.
     # All jobs then use the same source of truth for `node_modules`,
     # minimizing risk of failure from setup steps.
     setup:
-        needs: [pre-build-check, pre-test-check, pre-typescript-check]
+        needs: [pre-check]
 
-        if: ${{ needs.pre-build-check.outputs.should_skip != 'true' || needs.pre-test-check.outputs.should_skip != 'true' || needs.pre-typescript-check.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-check.outputs.skip_build != 'true' || needs.pre-check.outputs.skip_test != 'true' || needs.pre-check.outputs.skip_typescript }}
 
         runs-on: ubuntu-latest
 
@@ -84,9 +86,9 @@ jobs:
 
     test:
         # Wait for jobs to complete before running this job.
-        needs: [pre-test-check, setup]
+        needs: [pre-check, setup]
 
-        if: ${{ needs.pre-test-check.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-check.outputs.skip_test != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -123,9 +125,9 @@ jobs:
 
     typescript:
         # Wait for jobs to complete before running this job.
-        needs: [pre-typescript-check, setup]
+        needs: [pre-check, setup]
         
-        if: ${{ needs.pre-typescript-check.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-check.outputs.skip_typescript != 'true' }}
 
         runs-on: ubuntu-latest
 
@@ -162,9 +164,9 @@ jobs:
 
     build:
         # Wait for jobs to complete before running this job.
-        needs: [pre-build-check, setup]
+        needs: [pre-check, setup]
         
-        if: ${{ needs.pre-build-check.outputs.should_skip != 'true' }}
+        if: ${{ needs.pre-check.outputs.skip_build != 'true' }}
 
         runs-on: ubuntu-latest
 
