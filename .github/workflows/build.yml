@@ -7,7 +7,7 @@ name: Build
 on: [pull_request]
 
 jobs:
-    pre-checkss:
+    pre-checks:
       runs-on: ubuntu-latest
       outputs:
         should_skip: ${{ steps.skip_check.outputs.should_skip }}
