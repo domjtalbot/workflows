@@ -24,7 +24,7 @@ jobs:
         - name: Test rename
           run: |
             echo Testing 123...
-        - run: echo ${ github.event.head_commit.message }
+        - run: echo ${{ github.event.head_commit.message }}
         
     summary:
       runs-on: ubuntu-latest
