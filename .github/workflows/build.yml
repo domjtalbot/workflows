@@ -10,16 +10,6 @@ jobs:
     pre-checks:
       runs-on: ubuntu-latest
       outputs:
-        should_skip: ${{ steps.skip_check.outputs.should_skip }}
-      steps:
-        - id: skip_check
-          uses: fkirc/skip-duplicate-actions@master
-          with:
-            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
-
-    pre-build-check:
-      runs-on: ubuntu-latest
-      outputs:
         skip_build: ${{ steps.skip_build.outputs.should_skip }}
         skip_test: ${{ steps.skip_test.outputs.should_skip }}
         skip_typescript: ${{ steps.skip_typescript.outputs.should_skip }}
