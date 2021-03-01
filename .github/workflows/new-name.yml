@@ -33,7 +33,7 @@ jobs:
 
     renamed-passed:
       runs-on: ubuntu-latest
-      needs: [test-rename]
+      needs: [pre_job, test-rename]
       steps:
         - name: Test rename passed
           run: |
