@@ -21,4 +21,4 @@ jobs:
             name: Test XYZ
             conclusion: ${{ job.status }}
             output: |
-              {"summary":${{ job.status }}}
+              {"summary": "hello world"}
