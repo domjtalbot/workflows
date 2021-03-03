@@ -22,7 +22,7 @@ jobs:
         name: Check Skip Workflow
         run: |
           # Get last commit message
-          readonly local last_commit_log=$(git log -3 --pretty=format:"%s")
+          readonly local last_commit_log=$(git log -3 --pretty=format:"%s" --online)
           echo "last commit log: $last_commit_log"
 
           readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
