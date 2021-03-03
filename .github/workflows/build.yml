@@ -18,12 +18,18 @@ jobs:
 
       - run: |
           commit_filter="\[skip build\]"
+
+          last_commit_log=$(git log -1 --pretty=format:"%s %b")
+
           readonly local is_merge_commit=$(echo "$last_commit_log" | egrep -c "Merge [a-zA-Z0-9]* into [a-zA-Z0-9]*")
+
+          echo "Is merge commit: $is_merge_commit"
 
           if [[ "$is_merge_commit" -eq 1 ]]; then
             readonly local commit_id=$(echo "$last_commit_log" | sed 's/Merge //' | sed 's/ into [a-zA-Z0-9]*//')
             last_commit_log=$(git log -1 --pretty="%s %b" $commit_id)
           fi
+
           echo "Last commit log: $last_commit_log"
 
           total_filter_count=0
