@@ -21,7 +21,7 @@ jobs:
         id: check-skip-workflow
         name: Check Skip Workflow
         run: |
-          echo $(git log)
+          echo $(git log -10 --pretty=format:"%s")
 
           # Get last commit message
           readonly local last_commit_log=$(git log -1 --pretty=format:"%s")
