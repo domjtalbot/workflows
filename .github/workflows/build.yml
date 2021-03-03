@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v2
         with:
-          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+          # Fetch depth is 2 so that pull request commit can be read.
           fetch-depth: 2
 
       - env:
@@ -24,15 +24,17 @@ jobs:
         id: check-skip-workflow
         name: Check Skip Workflow
         run: |
+          # Get recent commit messages
           last_commit_log=$(git log --format=%B -n 1 HEAD^2)
           
           echo "Last commits: $last_commit_log"
 
+          # Look for commit filter in recent commits
           filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
 
           if [[ "$filter_count" -eq 0 ]]; then
             echo "Continue with workflow..."
-            echo ::set-output name=should-skip::'true'
+            echo ::set-output name=should-skip::'false'
           else
             echo "The last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping workflow."
             echo ::set-output name=should-skip::'true'
