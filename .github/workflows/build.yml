@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v2
 
       - run: |
+          commit_filter="\[skip build\]"
           readonly local is_merge_commit=$(echo "$last_commit_log" | egrep -c "Merge [a-zA-Z0-9]* into [a-zA-Z0-9]*")
 
           if [[ "$is_merge_commit" -eq 1 ]]; then
