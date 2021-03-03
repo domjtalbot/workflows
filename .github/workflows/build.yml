@@ -16,48 +16,11 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v2
 
-      - run: |
-          commit_filter="\[skip build\]"
-
-          last_commit_log=$(git log -1 --pretty=format:"%s %b")
-
-          readonly local is_merge_commit=$(echo "$last_commit_log" | egrep -c "Merge [a-zA-Z0-9]* into [a-zA-Z0-9]*")
-
-          echo "Is merge commit: $is_merge_commit"
-
-          if [[ "$is_merge_commit" -eq 1 ]]; then
-            readonly local commit_id=$(echo "$last_commit_log" | sed 's/Merge //' | sed 's/ into [a-zA-Z0-9]*//')
-            last_commit_log=$(git log -1 --pretty="%s %b" $commit_id)
-          fi
-
-          echo "Last commit log: $last_commit_log"
-
-          total_filter_count=0
-          for filter in "${filters[@]}"; do
-            filter_count=$(echo "$last_commit_log" | fgrep -c "$filter")
-            total_filter_count=$((filter_count+total_filter_count))
-          done
-          echo "Number of occurrences of '$commit_filter': $total_filter_count"
-
       - env:
           COMMIT_FILTER: '\[skip build\]'
         id: check-skip-workflow
         name: Check Skip Workflow
-        run: |
-          # Get last commit message
-          readonly local last_commit_log=$(git log -3 --pretty=format:"%s" --online)
-          echo "last commit log: $last_commit_log"
-
-          readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
-          echo "number of occurence of '$COMMIT_FILTER' in '$last_commit_log': $filter_count"
-
-          if [[ "$filter_count" -eq 0 ]]; then
-            echo "Continue with workflow..."
-            echo ::set-output name=should-skip::'true'
-          else
-            echo "The last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping workflow."
-            echo ::set-output name=should-skip::'true'
-          fi
+        run: echo ::set-output should-skip=pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
 
   pre-checks:
     if: ${{ needs.skip-workflow.outputs.should-skip != 'true' }}
