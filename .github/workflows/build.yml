@@ -23,7 +23,20 @@ jobs:
           COMMIT_FILTER: '\[skip build\]'
         id: check-skip-workflow
         name: Check Skip Workflow
-        run: echo ::set-output name=should-skip::pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
+        run: |
+          last_commit_log=$(git log --format=%B -n 1 HEAD^2)
+          
+          echo "Last commits: $last_commit_log"
+
+          filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
+
+          if [[ "$filter_count" -eq 0 ]]; then
+            echo "Continue with workflow..."
+            echo ::set-output name=should-skip::'true'
+          else
+            echo "The last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping workflow."
+            echo ::set-output name=should-skip::'true'
+          fi
 
   pre-checks:
     if: ${{ needs.skip-workflow.outputs.should-skip != 'true' }}
