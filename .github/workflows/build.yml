@@ -15,12 +15,15 @@ jobs:
       # Checkout codebase triggered by commit
       - name: Checkout Codebase
         uses: actions/checkout@v2
+        with:
+          # We need to fetch with a depth of 2 for pull_request so we can do HEAD^2
+          fetch-depth: 2
 
       - env:
           COMMIT_FILTER: '\[skip build\]'
         id: check-skip-workflow
         name: Check Skip Workflow
-        run: echo ::set-output should-skip=pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
+        run: echo ::set-output name=should-skip::pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
 
   pre-checks:
     if: ${{ needs.skip-workflow.outputs.should-skip != 'true' }}
