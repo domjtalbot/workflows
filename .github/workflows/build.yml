@@ -7,196 +7,229 @@ name: Build
 on: [pull_request]
 
 jobs:
-    pre-checks:
-      runs-on: ubuntu-latest
-      outputs:
-        skip_build: ${{ steps.skip_build.outputs.should_skip }}
-        skip_test: ${{ steps.skip_test.outputs.should_skip }}
-        skip_typescript: ${{ steps.skip_typescript.outputs.should_skip }}
-      steps:
-        - id: skip_build
-          uses: fkirc/skip-duplicate-actions@master
-          with:
-            paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
+  skip-workflow:
+    runs-on: ubuntu-latest
+    outputs:
+      should-skip: ${{ steps.check-skip-workflow.outputs.should-skip }}
+    steps:
+      # Checkout codebase triggered by commit
+      - name: Checkout Codebase
+        uses: actions/checkout@v2
 
-        - id: skip_test
-          uses: fkirc/skip-duplicate-actions@master
-          with:
-            paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
+      - env:
+          COMMIT_FILTER: '\[skip build\]'
+        id: check-skip-workflow
+        name: Check Skip Workflow
+        run: |
+          echo $(git log)
 
-        - id: skip_typescript
-          uses: fkirc/skip-duplicate-actions@master
-          with:
-            paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
-                        
-    # Setup the dependencies used by all jobs.
-    # This job is reponsible for installing and caching yarn
-    # dependencies, which are then used by other jobs.
-    # All jobs then use the same source of truth for `node_modules`,
-    # minimizing risk of failure from setup steps.
-    setup:
-        needs: [pre-checks]
+          # Get last commit message
+          readonly local last_commit_log=$(git log -1 --pretty=format:"%s")
+          echo "last commit log: $last_commit_log"
 
-        if: ${{ needs.pre-checks.outputs.skip_build != 'true' || needs.pre-checks.outputs.skip_test != 'true' || needs.pre-checks.outputs.skip_typescript }}
+          readonly local filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
+          echo "number of occurence of '$COMMIT_FILTER' in '$last_commit_log': $filter_count"
 
-        runs-on: ubuntu-latest
+          if [[ "$filter_count" -eq 0 ]]; then
+            echo "Continue with workflow..."
+            echo ::set-output name=should-skip::'true'
+          else
+            echo "The last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping workflow."
+            echo ::set-output name=should-skip::'true'
+          fi
 
-        steps:
-            # Checkout codebase triggered by commit
-            - name: Checkout Codebase
-              uses: actions/checkout@v2
+  pre-checks:
+    if: ${{ needs.skip-workflow.outputs.should-skip != 'true' }}
+    needs: [skip-workflow]
+    runs-on: ubuntu-latest
+    outputs:
+      skip_build: ${{ steps.skip_build.outputs.should_skip }}
+      skip_test: ${{ steps.skip_test.outputs.should_skip }}
+      skip_typescript: ${{ steps.skip_typescript.outputs.should_skip }}
+    steps:
+      - id: skip_build
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          paths_ignore: '["**/*.md", "**/.gitignore", "**/.next/", "**/LICENSE"]'
 
-            # Get yarn cache for the specific `yarn.lock`.
-            # If the cache doesn't exist use another cache using
-            # the restore key, to help speed up the yarn install process.
-            - id: yarn-cache
-              if: github.actor != 'nektos/act'
-              name: Cache Node Dependencies
-              uses: actions/cache@v2
-              with:
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  path: |
-                      node_modules
-                      */*/node_modules
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+      - id: skip_test
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
 
-            # Node is only required in this job, if `yarn install`
-            # needs to be run, which in turn is only run if no
-            # cache exists for specifc `yarn.lock`.
-            - if: steps.yarn-cache.outputs.cache-hit != 'true'
-              name: Setup Node.js
-              uses: actions/setup-node@v2
+      - id: skip_typescript
+        uses: fkirc/skip-duplicate-actions@master
+        with:
+          paths: '["**/*.ts", "**/*.tsx", "**/tsconfig.json"]'
 
-            # Only install yarn dependencies if cache for the
-            # specific `yarn.lock` didn't exist.
-            - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
-              name: Install Yarn Dependencies
-              run: yarn
+  # Setup the dependencies used by all jobs.
+  # This job is reponsible for installing and caching yarn
+  # dependencies, which are then used by other jobs.
+  # All jobs then use the same source of truth for `node_modules`,
+  # minimizing risk of failure from setup steps.
+  setup:
+    needs: [pre-checks]
 
-    test:
-        # Wait for jobs to complete before running this job.
-        needs: [pre-checks, setup]
+    if: ${{ needs.pre-checks.outputs.skip_build != 'true' || needs.pre-checks.outputs.skip_test != 'true' || needs.pre-checks.outputs.skip_typescript }}
 
-        if: ${{ needs.pre-checks.outputs.skip_test != 'true' }}
+    runs-on: ubuntu-latest
 
-        runs-on: ubuntu-latest
+    steps:
+      # Checkout codebase triggered by commit
+      - name: Checkout Codebase
+        uses: actions/checkout@v2
 
-        steps:
-            # Checkout codebase triggered by commit
-            - name: Checkout
-              uses: actions/checkout@v2
+      # Get yarn cache for the specific `yarn.lock`.
+      # If the cache doesn't exist use another cache using
+      # the restore key, to help speed up the yarn install process.
+      - id: yarn-cache
+        if: github.actor != 'nektos/act'
+        name: Cache Node Dependencies
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            node_modules
+            */*/node_modules
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-            # Get yarn cache for the specific `yarn.lock`.
-            - id: yarn-cache
-              if: github.actor != 'nektos/act'
-              name: Cache Node Dependencies
-              uses: actions/cache@v2
-              with:
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  path: |
-                      node_modules
-                      */*/node_modules
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+      # Node is only required in this job, if `yarn install`
+      # needs to be run, which in turn is only run if no
+      # cache exists for specifc `yarn.lock`.
+      - if: steps.yarn-cache.outputs.cache-hit != 'true'
+        name: Setup Node.js
+        uses: actions/setup-node@v2
 
-            # Install Node as it is required by the job.
-            - name: Setup Node.js
-              uses: actions/setup-node@v2
+      # Only install yarn dependencies if cache for the
+      # specific `yarn.lock` didn't exist.
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
+        name: Install Yarn Dependencies
+        run: yarn
 
-            # Only install yarn dependencies if cache for the
-            # specific `yarn.lock` didn't exist.
-            - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
-              name: Install Yarn Dependencies
-              run: yarn
+  test:
+    # Wait for jobs to complete before running this job.
+    needs: [pre-checks, setup]
 
-            - name: Test
-              run: yarn test
+    if: ${{ needs.pre-checks.outputs.skip_test != 'true' }}
 
-    typescript:
-        # Wait for jobs to complete before running this job.
-        needs: [pre-checks, setup]
-        
-        if: ${{ needs.pre-checks.outputs.skip_typescript != 'true' }}
+    runs-on: ubuntu-latest
 
-        runs-on: ubuntu-latest
+    steps:
+      # Checkout codebase triggered by commit
+      - name: Checkout
+        uses: actions/checkout@v2
 
-        steps:
-            # Checkout codebase triggered by commit
-            - name: Checkout
-              uses: actions/checkout@v2
+      # Get yarn cache for the specific `yarn.lock`.
+      - id: yarn-cache
+        if: github.actor != 'nektos/act'
+        name: Cache Node Dependencies
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            node_modules
+            */*/node_modules
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-            # Get yarn cache for the specific `yarn.lock`.
-            - id: yarn-cache
-              if: github.actor != 'nektos/act'
-              name: Cache Node Dependencies
-              uses: actions/cache@v2
-              with:
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  path: |
-                      node_modules
-                      */*/node_modules
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+      # Install Node as it is required by the job.
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
 
-            # Install Node as it is required by the job.
-            - name: Setup Node.js
-              uses: actions/setup-node@v2
+      # Only install yarn dependencies if cache for the
+      # specific `yarn.lock` didn't exist.
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
+        name: Install Yarn Dependencies
+        run: yarn
 
-            # Only install yarn dependencies if cache for the
-            # specific `yarn.lock` didn't exist.
-            - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
-              name: Install Yarn Dependencies
-              run: yarn
+      - name: Test
+        run: yarn test
 
-            - name: Typescript
-              run: yarn type-check
+  typescript:
+    # Wait for jobs to complete before running this job.
+    needs: [pre-checks, setup]
 
-    build:
-        # Wait for jobs to complete before running this job.
-        needs: [pre-checks, setup]
-        
-        if: ${{ needs.pre-checks.outputs.skip_build != 'true' }}
+    if: ${{ needs.pre-checks.outputs.skip_typescript != 'true' }}
 
-        runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
 
-        steps:
-            # Checkout codebase triggered by commit
-            - name: Checkout
-              uses: actions/checkout@v2
+    steps:
+      # Checkout codebase triggered by commit
+      - name: Checkout
+        uses: actions/checkout@v2
 
-            # Get yarn cache for the specific `yarn.lock`.
-            - id: yarn-cache
-              if: github.actor != 'nektos/act'
-              name: Cache Node Dependencies
-              uses: actions/cache@v2
-              with:
-                  key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
-                  path: |
-                      node_modules
-                      */*/node_modules
-                  restore-keys: |
-                      ${{ runner.os }}-yarn-
+      # Get yarn cache for the specific `yarn.lock`.
+      - id: yarn-cache
+        if: github.actor != 'nektos/act'
+        name: Cache Node Dependencies
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            node_modules
+            */*/node_modules
+          restore-keys: |
+            ${{ runner.os }}-yarn-
 
-            # Get next build cache for the specific `yarn.lock`.
-            - id: next-cache
-              if: github.actor != 'nektos/act'
-              name: Cache Next build
-              uses: actions/cache@v2
-              with:
-                  key: ${{ runner.os }}-next
-                  path: |
-                      ./**/.next
+      # Install Node as it is required by the job.
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
 
-            # Install Node as it is required by the job.
-            - name: Setup Node.js
-              uses: actions/setup-node@v2
+      # Only install yarn dependencies if cache for the
+      # specific `yarn.lock` didn't exist.
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
+        name: Install Yarn Dependencies
+        run: yarn
 
-            # Only install yarn dependencies if cache for the
-            # specific `yarn.lock` didn't exist.
-            - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
-              name: Install Yarn Dependencies
-              run: yarn
+      - name: Typescript
+        run: yarn type-check
 
-            - name: Build
-              run: yarn build
+  build:
+    # Wait for jobs to complete before running this job.
+    needs: [pre-checks, setup]
+
+    if: ${{ needs.pre-checks.outputs.skip_build != 'true' }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout codebase triggered by commit
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Get yarn cache for the specific `yarn.lock`.
+      - id: yarn-cache
+        if: github.actor != 'nektos/act'
+        name: Cache Node Dependencies
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          path: |
+            node_modules
+            */*/node_modules
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      # Get next build cache for the specific `yarn.lock`.
+      - id: next-cache
+        if: github.actor != 'nektos/act'
+        name: Cache Next build
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-next
+          path: |
+            ./**/.next
+
+      # Install Node as it is required by the job.
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+
+      # Only install yarn dependencies if cache for the
+      # specific `yarn.lock` didn't exist.
+      - if: ${{ steps.yarn-cache.outputs.cache-hit != 'true' || github.actor == 'nektos/act' }}
+        name: Install Yarn Dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
