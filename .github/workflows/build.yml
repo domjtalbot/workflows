@@ -16,6 +16,8 @@ jobs:
       - name: Checkout Codebase
         uses: actions/checkout@v2
 
+      - run: echo $(git log -n 3 --no-merges)
+      
       - env:
           COMMIT_FILTER: '\[skip build\]'
         id: check-skip-workflow
