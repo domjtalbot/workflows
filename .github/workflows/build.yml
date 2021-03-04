@@ -25,18 +25,22 @@ jobs:
         name: Check Skip Workflow
         run: |
           # Get recent commit messages
-          last_commit_log=$(git log --format=%B -n 3)
+          last_commit_log=$(git log --format=%B -n 1 --skip=2)
 
           echo "Last commits: $last_commit_log"
+
+          echo "Looking for: $COMMIT_FILTER"
 
           # Look for commit filter in recent commits
           filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
 
+          echo "Checking IF statement"
+
           if [[ "$filter_count" -eq 0 ]]; then
-            echo "Continue with workflow..."
+            echo "Continue workflow..."
             # echo ::set-output name=should-skip::'false'
           else
-            echo "The last commit log \"$last_commit_log\" contains \"$COMMIT_FILTER\", stopping workflow."
+            echo "Skipping workflow..."
             # echo ::set-output name=should-skip::'true'
           fi
 
