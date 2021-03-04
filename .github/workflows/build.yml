@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           # Fetch depth is 2 so that pull request commit can be read.
-          fetch-depth: 1
+          fetch-depth: 2
 
       - env:
           COMMIT_FILTER: '\[skip build\]'
@@ -25,23 +25,23 @@ jobs:
         name: Check Skip Workflow
         run: |
           # Get recent commit messages
-          last_commit_log=$(git log --format=%B -n 1 --skip=2)
+          last_commit_log=$(git log --format=%B -n 1 --no-merges)
 
           echo "Last commits: $last_commit_log"
 
           echo "Looking for: $COMMIT_FILTER"
 
           # Look for commit filter in recent commits
-          filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" )
+          filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" ) || 0
 
           echo "Checking IF statement"
 
           if [[ "$filter_count" -eq 0 ]]; then
             echo "Continue workflow..."
-            # echo ::set-output name=should-skip::'false'
+            echo ::set-output name=should-skip::'false'
           else
             echo "Skipping workflow..."
-            # echo ::set-output name=should-skip::'true'
+            echo ::set-output name=should-skip::'true'
           fi
 
   pre-checks:
