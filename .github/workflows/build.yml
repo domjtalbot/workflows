@@ -25,14 +25,14 @@ jobs:
         name: Check Skip Workflow
         run: |
           # Get recent commit messages
-          last_commit_log=$(git log --format=%B -n 1 --no-merges)
+          readonly local last_commit=$(git log --pretty=format:"%s" -n 1 --no-merges)
 
-          echo "Last commits: $last_commit_log"
+          echo "Last commits: $last_commit"
 
           echo "Looking for: $COMMIT_FILTER"
 
           # Look for commit filter in recent commits
-          filter_count=$(echo "$last_commit_log" | grep -c -w "$COMMIT_FILTER" || 0)
+          readonly local filter_count=$(echo "$last_commit" | grep -c -w "$COMMIT_FILTER")
 
           echo "Checking IF statement"
 
