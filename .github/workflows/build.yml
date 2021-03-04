@@ -20,7 +20,7 @@ jobs:
           fetch-depth: 2
 
       - env:
-          COMMIT_FILTER: '\[skip build\]'
+          COMMIT_FILTER: '[skip build]'
         id: check-skip-workflow
         name: Check Skip Workflow
         run: |
@@ -32,7 +32,7 @@ jobs:
           echo "Looking for: $COMMIT_FILTER"
 
           # Look for commit filter in recent commits
-          filter_count=$(echo "$last_commit_log" | grep -c "$COMMIT_FILTER" ) || 0
+          filter_count=$(echo "$last_commit_log" | grep -c -w "$COMMIT_FILTER" || 0)
 
           echo "Checking IF statement"
 
