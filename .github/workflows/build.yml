@@ -17,7 +17,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           # Fetch depth is 2 so that pull request commit can be read.
-          fetch-depth: 2
+          fetch-depth: 1
 
       - env:
           COMMIT_FILTER: '\[skip build\]'
