@@ -25,7 +25,7 @@ jobs:
         name: Check Skip Workflow
         run: |
           # Get recent commit messages
-          last_commit_log=$(git log --format=%B -n 1)
+          last_commit_log=$(git log --format=%B -n 1 --skip=2)
 
           echo "Last commits: $last_commit_log"
 
