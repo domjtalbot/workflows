@@ -5,12 +5,64 @@
 
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      
+  # Monitor GitHub Actions for updates
   - package-ecosystem: "github-actions"
+    # Prefix all commit messages with "gh-actions"
+    # include a list of updated dependencies
+    commit-message:
+      prefix: "gh-actions"
+      include: "scope"
+    # Files stored in repository root
     directory: "/"
+    # Specify labels for pull requests
+    labels:
+      - "CI: GitHub Actions"
+      - "Dependencies"
+      - "Dependabot"
     schedule:
-      interval: "daily"
+      # Check for updates to GitHub Actions every weekday
+      day: "monday"
+      interval: "weekly"
+      time: "05:00"
+      timezone: "Europe/London"
+
+  # Monitor GitHub Actions Examples for updates
+  - package-ecosystem: "github-actions"
+    # Prefix all commit messages with "gh-actions"
+    # include a list of updated dependencies
+    commit-message:
+      prefix: "gh-actions"
+      include: "scope"
+    # Files stored in repository root
+    directory: "/example-workflow"
+    # Specify labels for pull requests
+    labels:
+      - "CI: GitHub Actions"
+      - "Dependencies"
+      - "Dependabot"
+    schedule:
+      # Check for updates to GitHub Actions every weekday
+      day: "monday"
+      interval: "weekly"
+      time: "05:15"
+      timezone: "Europe/London"
+
+  # Monitor NPM for updates
+  - package-ecosystem: "npm"
+    # Prefix all commit messages with "npm"
+    # include a list of updated dependencies
+    commit-message:
+      prefix: "npm"
+      include: "scope"
+    # Files stored in repository root
+    directory: "/"
+    # Specify labels for pull requests
+    labels:
+      - "Dependencies"
+      - "Dependabot"
+    schedule:
+      # Check for updates to npm dependencies every monday
+      day: "monday"
+      interval: "weekly"
+      time: "05:30"
+      timezone: "Europe/London"
