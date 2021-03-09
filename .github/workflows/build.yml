@@ -33,7 +33,7 @@ jobs:
             - id: yarn-cache
               if: github.actor != 'nektos/act'
               name: Cache Node Dependencies
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                   path: |
@@ -72,7 +72,7 @@ jobs:
             - id: yarn-cache
               if: github.actor != 'nektos/act'
               name: Cache Node Dependencies
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                   path: |
@@ -111,7 +111,7 @@ jobs:
             - id: yarn-cache
               if: github.actor != 'nektos/act'
               name: Cache Node Dependencies
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                   path: |
@@ -150,7 +150,7 @@ jobs:
             - id: yarn-cache
               if: github.actor != 'nektos/act'
               name: Cache Node Dependencies
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
                   path: |
@@ -163,7 +163,7 @@ jobs:
             - id: next-cache
               if: github.actor != 'nektos/act'
               name: Cache Next build
-              uses: actions/cache@v2
+              uses: actions/cache@v2.1.4
               with:
                   key: ${{ runner.os }}-next
                   path: |
